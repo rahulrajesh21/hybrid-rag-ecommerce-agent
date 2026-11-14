@@ -6,7 +6,13 @@ from sqlalchemy.orm import Session
 from datetime import date,timedelta
 
 @tool
-def get_order_status(order_id: int | None = None, config: RunnableConfig = None):
+def get_order_status(order_id: int | None = None, config: RunnableConfig = None) -> str:
+    """Retrieve the current fulfillment status, item name, and total amount for a specific order.
+
+    Args:
+        order_id: Optional integer ID of the order. If omitted, reads from the active session context.
+        config: Optional runtime configuration containing session customer and order details.
+    """
     configurable = config.get("configurable", {}) if config else {}
     target_order_id = order_id or configurable.get("order_id")
     customer_id = configurable.get("customer_id")
