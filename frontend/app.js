@@ -94,7 +94,39 @@ function updateUserUI() {
             greetingParagraph.innerHTML = `Welcome to <strong>NovaGear</strong>. I am your technical concierge.`;
         }
     }
+    renderQuickPrompts();
     if (window.lucide) lucide.createIcons();
+}
+
+function renderQuickPrompts() {
+    const container = document.getElementById("quick-prompts-container");
+    if (!container) return;
+
+    if (activeUser) {
+        container.innerHTML = `
+            <button onclick="conciergeInquire('What is the status of my order?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>📦 Track Order</span>
+            </button>
+            <button onclick="conciergeInquire('Am I eligible to return my order?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>🔄 Return Check</span>
+            </button>
+            <button onclick="conciergeInquire('When will my order arrive?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>🚚 Delivery Date</span>
+            </button>
+        `;
+    } else {
+        container.innerHTML = `
+            <button onclick="conciergeInquire('What is the return policy for opened electronics?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>🛡️ Return Policy</span>
+            </button>
+            <button onclick="conciergeInquire('What are the audio specs of NovaBuds Pro 2?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>🎧 NovaBuds Specs</span>
+            </button>
+            <button onclick="conciergeInquire('Do you offer free shipping on orders?')" class="text-[11px] px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-subtle transition flex items-center gap-1">
+                <span>📦 Shipping Rates</span>
+            </button>
+        `;
+    }
 }
 
 async function openUserModal() {
@@ -109,6 +141,7 @@ function closeUserModal() {
 function selectGuest() {
     activeUser = null;
     localStorage.removeItem("novagear_active_user");
+    resetChatSession();
     updateUserUI();
     closeUserModal();
 }
@@ -116,6 +149,7 @@ function selectGuest() {
 function selectUser(user) {
     activeUser = user;
     localStorage.setItem("novagear_active_user", JSON.stringify(user));
+    resetChatSession();
     updateUserUI();
     closeUserModal();
 }
@@ -275,6 +309,7 @@ async function handleSendMessage(e) {
             body: JSON.stringify({
                 message: query,
                 session_id: currentSessionId,
+                customer_id: activeUser ? activeUser.id : null,
             }),
         });
 

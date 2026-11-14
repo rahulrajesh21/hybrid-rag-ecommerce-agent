@@ -1,7 +1,7 @@
 from db.db import Base
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String,Date
 from sqlalchemy.orm import relationship
-
+from datetime import date
 
 class Customer(Base):
     __tablename__ = "customer"
@@ -22,5 +22,6 @@ class Order(Base):
     item_name = Column(String, nullable=False)
     amount = Column(Float, nullable=False)
     status = Column(String, default="processing")
-
+    shipping_tier = Column(String, default="standard", nullable=False)
+    date = Column(Date,default=date.today,nullable=False)
     customer = relationship("Customer", back_populates="orders")

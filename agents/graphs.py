@@ -1,7 +1,7 @@
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 from agents.system_prompt import SYSTEM_PROMPT
-
+from agents.tools.order_tool import get_order_status,check_return_eligibility,delivery_estimate
 from langchain.embeddings import init_embeddings
 
 checkpoint = InMemorySaver()
@@ -21,7 +21,7 @@ config = {
 
 model = create_agent(
     model='google_genai:gemini-3.5-flash-lite',
-    tools=[],
+    tools=[get_order_status,check_return_eligibility,delivery_estimate],
     system_prompt=SYSTEM_PROMPT,
-    checkpointer=checkpoint
+    checkpointer=checkpoint,
 )

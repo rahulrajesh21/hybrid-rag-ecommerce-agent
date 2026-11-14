@@ -28,6 +28,7 @@ async def chat_service(payload:ChatRequest,store:PineconeVectorStore,bm25_retrie
     run_config = {
         "configurable": {
             "thread_id": payload.session_id,
+            "customer_id":payload.customer_id
         }
     }
     response = await model.ainvoke({
