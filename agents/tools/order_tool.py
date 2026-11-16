@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from datetime import date,timedelta
 
 @tool
-def get_order_status(order_id: int | None = None, config: RunnableConfig = None) -> str:
+def get_order_status(order_id: str | None = None, config: RunnableConfig = None) -> str:
     """Retrieve the current fulfillment status, item name, and total amount for a specific order.
 
     Args:
@@ -19,7 +19,7 @@ def get_order_status(order_id: int | None = None, config: RunnableConfig = None)
 
     db = SessionLocal()
     try:
-        query = db.query(Order).filter(Order.id == target_order_id)
+        query = db.query(Order).filter(Order.order_number == target_order_id)
         if customer_id:
             query = query.filter(Order.customer_id == customer_id)
         order = query.first()
@@ -44,7 +44,7 @@ def add_working_days(start_date: date, days: int) -> date:
     return current
 
 @tool
-def delivery_estimate(order_id: int | None = None, config: RunnableConfig = None) -> str:
+def delivery_estimate(order_id: str | None = None, config: RunnableConfig = None) -> str:
     """Estimate the delivery date for the customer's active order based on its order date and shipping tier."""
     configurable = config.get("configurable", {}) if config else {}
     target_order_id = order_id or configurable.get("order_id")
@@ -55,7 +55,7 @@ def delivery_estimate(order_id: int | None = None, config: RunnableConfig = None
 
     db = SessionLocal()
     try:
-        query = db.query(Order).filter(Order.id == target_order_id)
+        query = db.query(Order).filter(Order.order_number == target_order_id)
         if customer_id:
             query = query.filter(Order.customer_id == customer_id)
         order = query.first()
@@ -98,7 +98,7 @@ from db.db_model import Order
 
 
 @tool
-def check_return_eligibility(order_id: int | None = None, config: RunnableConfig = None) -> str:
+def check_return_eligibility(order_id: str | None = None, config: RunnableConfig = None) -> str:
     """Checks whether an order is eligible for return and refund based on NovaGear's 30-day return policy.
     
     Args:
@@ -113,7 +113,7 @@ def check_return_eligibility(order_id: int | None = None, config: RunnableConfig
 
     db = SessionLocal()
     try:
-        query = db.query(Order).filter(Order.id == target_order_id)
+        query = db.query(Order).filter(Order.order_number == target_order_id)
         if customer_id:
             query = query.filter(Order.customer_id == customer_id)
         order = query.first()
@@ -135,28 +135,27 @@ def check_return_eligibility(order_id: int | None = None, config: RunnableConfig
 
         order_date = getattr(order, "date", None) or date.today()
         days_elapsed = (date.today() - order_date).days
-        standard_window = 30
 
         is_electronics = any(
             keyword in order.item_name.lower()
             for keyword in ["buds", "hub", "lightbar", "charger", "audio", "sensor"]
         )
+        window = 14 if is_electronics else 30
+        window_label = "14-day electronics" if is_electronics else "30-day standard"
 
-        if days_elapsed <= standard_window:
-            days_remaining = standard_window - days_elapsed
-            policy_notes = (
+        if days_elapsed <= window:
+            days_remaining = window - days_elapsed
+            return (
                 f"Order #{order.order_number} ({order.item_name}) was placed on {order_date.strftime('%b %d, %Y')} "
-                f"({days_elapsed} days ago). It is ELIGIBLE for return with {days_remaining} days remaining in the 30-day window.\n\n"
+                f"({days_elapsed} days ago). It is ELIGIBLE for return with {days_remaining} days remaining in the {window_label} window.\n\n"
                 f"• Return Options: 100% Free return shipping if you choose Store Credit or an exchange; "
                 f"a flat $7.99 carrier label fee is deducted if refunding to your original payment method.\n"
+                f"• Condition: Must be returned with all original accessories and packaging."
             )
-            if is_electronics:
-                policy_notes += "• Note: Opened electronics must be returned within 14 days of delivery with all original accessories."
-            return policy_notes
-        days_overdue = days_elapsed - standard_window
+        days_overdue = days_elapsed - window
         return (
             f"Order #{order.order_number} ({order.item_name}) was placed on {order_date.strftime('%b %d, %Y')} "
-            f"({days_elapsed} days ago), which is {days_overdue} days past NovaGear's 30-day standard return window.\n\n"
+            f"({days_elapsed} days ago), which is {days_overdue} days past NovaGear's {window_label} return window.\n\n"
             f"While standard returns have closed, your product is protected under NovaGear's 2-Year Limited Hardware Warranty. "
             f"If you are experiencing any technical defects or hardware malfunctions, we can initiate a warranty repair or replacement."
         )

@@ -1,0 +1,305 @@
+[
+  {
+    "test_id": "TC-TOOL-001",
+    "user_query": "Where is my order ORD-6520?",
+    "customer_id": 3,
+    "order_id": null,
+    "expected_tool": "get_order_status",
+    "expected_tool_args": {
+      "order_id": "ORD-6520"
+    },
+    "ground_truth_facts": [
+      "Order ORD-6520 is for the NovaSense Smart Hub",
+      "The order status is cancelled"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-002",
+    "user_query": "Can you check the status of my order ORD-5109?",
+    "customer_id": 4,
+    "order_id": null,
+    "expected_tool": "get_order_status",
+    "expected_tool_args": {
+      "order_id": "ORD-5109"
+    },
+    "ground_truth_facts": [
+      "Order ORD-5109 is for the NovaPower 65W GaN Charger",
+      "The order status is refunded"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-003",
+    "user_query": "When is my order ORD-8842 estimated to arrive?",
+    "customer_id": 2,
+    "order_id": null,
+    "expected_tool": "delivery_estimate",
+    "expected_tool_args": {
+      "order_id": "ORD-8842"
+    },
+    "ground_truth_facts": [
+      "Order ORD-8842 is for the MetroPack 25L Backpack",
+      "Uses Express shipping which takes 3 to 4 working days from order date"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-004",
+    "user_query": "When will my NovaBeam Lightbar order ORD-9430 be delivered?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": "delivery_estimate",
+    "expected_tool_args": {
+      "order_id": "ORD-9430"
+    },
+    "ground_truth_facts": [
+      "Order ORD-9430 is for the NovaBeam Monitor Lightbar",
+      "Uses Standard shipping which takes 7 working days from order date"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-005",
+    "user_query": "Is my order ORD-9021 eligible for a refund?",
+    "customer_id": 1,
+    "order_id": 1,
+    "expected_tool": "check_return_eligibility",
+    "expected_tool_args": {
+      "order_id": "ORD-9021"
+    },
+    "ground_truth_facts": [
+      "Order ORD-9021 for the NovaBuds Pro 2 is eligible for return and refund",
+      "Return shipping is free for store credit or exchange, or a flat $7.99 fee is deducted if refunding to original payment method"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-006",
+    "user_query": "Can I return my ErgoChair Pro order ORD-7814?",
+    "customer_id": 1,
+    "order_id": 2,
+    "expected_tool": "check_return_eligibility",
+    "expected_tool_args": {
+      "order_id": "ORD-7814"
+    },
+    "ground_truth_facts": [
+      "The 30-day standard return window for order ORD-7814 has expired",
+      "The chair is protected under NovaGear's 2-Year Limited Hardware Warranty"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-007",
+    "user_query": "When will my cancelled order ORD-6520 be delivered?",
+    "customer_id": 3,
+    "order_id": null,
+    "expected_tool": ["delivery_estimate", "get_order_status"],
+    "expected_tool_args": {
+      "order_id": "ORD-6520"
+    },
+    "ground_truth_facts": [
+      "Order ORD-6520 was cancelled and will not be delivered"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-008",
+    "user_query": "Can I get a return label for my cancelled order ORD-6520?",
+    "customer_id": 3,
+    "order_id": null,
+    "expected_tool": ["check_return_eligibility", "get_order_status"],
+    "expected_tool_args": {
+      "order_id": "ORD-6520"
+    },
+    "ground_truth_facts": [
+      "Order ORD-6520 was cancelled and cannot be returned"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-009",
+    "user_query": "I would like to initiate a return on order ORD-5109.",
+    "customer_id": 4,
+    "order_id": null,
+    "expected_tool": "check_return_eligibility",
+    "expected_tool_args": {
+      "order_id": "ORD-5109"
+    },
+    "ground_truth_facts": [
+      "Order ORD-5109 has already been returned or refunded",
+      "No additional return or refund can be processed on this order"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-010",
+    "user_query": "Can I return my NovaBeam Lightbar order ORD-9430?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": "check_return_eligibility",
+    "expected_tool_args": {
+      "order_id": "ORD-9430"
+    },
+    "ground_truth_facts": [
+      "Order ORD-9430 is still processing and has not shipped yet",
+      "The customer can cancel it directly for an immediate full refund rather than waiting for a return"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-011",
+    "user_query": "What is the estimated delivery date for order ORD-9021?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": "delivery_estimate",
+    "expected_tool_args": {
+      "order_id": "ORD-9021"
+    },
+    "ground_truth_facts": [
+      "Order ORD-9021 has already been delivered"
+    ]
+  },
+  {
+    "test_id": "TC-TOOL-012",
+    "user_query": "Can you check the current status of order ORD-9999?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": "get_order_status",
+    "expected_tool_args": {
+      "order_id": "ORD-9999"
+    },
+    "ground_truth_facts": [
+      "No order was found with ID ORD-9999",
+      "The customer is asked to double-check their order number"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-001",
+    "user_query": "What is your free shipping policy and what is the minimum spend required?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Complimentary standard shipping applies to orders over $75",
+      "Domestic orders under $75 incur a flat $5.99 shipping fee",
+      "Standard delivery typically takes 3 to 5 business days"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-002",
+    "user_query": "What is the maximum laptop screen size that fits in the MetroPack 25L backpack?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "The MetroPack 25L accommodates laptops up to 16.2 inches",
+      "Features a dedicated suspended false-bottom tech compartment for device protection"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-003",
+    "user_query": "How do I perform a factory reset on my NovaBuds Pro 2 if Bluetooth is disconnecting?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Place both earbuds into the charging case and leave the lid open",
+      "Press and hold the setup button on the back of the case for 10 seconds",
+      "Wait for the LED indicator to flash amber 3 times to confirm the factory reset"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-004",
+    "user_query": "Can I return replacement silicone ear tips if I broke the package seal?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Replacement silicone ear tips are non-returnable once the sterile packaging seal has been broken",
+      "Deemed final sale due to hygiene and health regulations"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-005",
+    "user_query": "Do you sell wireless mechanical gaming keyboards or 4K webcams?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "NovaGear does not sell mechanical gaming keyboards or webcams",
+      "The catalog specializes in acoustic isolation audio, motorized ergonomic desks and chairs, desk lighting, and everyday carry bags"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-006",
+    "user_query": "What documentation do I need to submit to file a warranty claim?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Original NovaGear order confirmation number or authorized retailer purchase receipt",
+      "Product serial number printed on the device or retail box",
+      "A brief video or photograph clearly demonstrating the hardware failure"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-007",
+    "user_query": "How many points do I need to reach the Vanguard tier in the NovaGear Club, and what perks do I get?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Requires 1,500 or more lifetime loyalty points",
+      "Provides unrestricted free 2-Day Express shipping on all orders with zero minimum spend",
+      "Includes 1.5x points earning velocity, VIP Concierge Support, and beta testing access"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-008",
+    "user_query": "How does the ErgoLift Standing Desk ship, and can it be delivered to a P.O. Box?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "Classified as an oversized freight item exceeding 85 lbs and ships via specialized threshold freight carriers",
+      "An adult signature (18+) is strictly required upon curbside or threshold drop-off",
+      "Cannot be delivered to P.O. Boxes or military APO/FPO addresses due to carrier size limitations"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-009",
+    "user_query": "How much does NovaGear deduct for return shipping if I want a refund to my credit card versus store credit?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "A flat-rate $7.99 domestic return shipping deduction is applied if refunding to original payment method",
+      "Return shipping is 100% free if selecting digital store credit or an exchange"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-010",
+    "user_query": "Does NovaGear store my credit card number or CVV code on your servers?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "NovaGear never stores full credit card numbers, CVV security codes, or banking credentials on local servers",
+      "Payment processing is tokenized directly through Level 1 PCI-DSS certified payment processors (Stripe and PayPal)",
+      "Customer data is encrypted in transit using TLS 1.3 and at rest with AES-256"
+    ]
+  },
+  {
+    "test_id": "TC-RAG-011",
+    "user_query": "Do you offer wireless smartwatches or 3.5mm braided headphone replacement cables?",
+    "customer_id": 1,
+    "order_id": null,
+    "expected_tool": null,
+    "expected_tool_args": {},
+    "ground_truth_facts": [
+      "NovaGear does not sell smartwatches or standalone 3.5mm replacement audio cables",
+      "The product catalog focuses on workspace accessories, acoustic hardware, and everyday carry bags"
+    ]
+  }
+]
